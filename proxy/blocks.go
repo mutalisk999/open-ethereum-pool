@@ -9,8 +9,8 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 
-	"github.com/sammy007/open-ethereum-pool/rpc"
-	"github.com/sammy007/open-ethereum-pool/util"
+	"pool_mod/rpc"
+	"pool_mod/util"
 )
 
 const maxBacklog = 3
@@ -64,13 +64,15 @@ func (s *ProxyServer) fetchBlockTemplate() {
 		return
 	}
 
+	// share diff
 	pendingReply.Difficulty = util.ToHex(s.config.Proxy.Difficulty)
 
 	newTemplate := BlockTemplate{
-		Header:               reply[0],
-		Seed:                 reply[1],
-		Target:               reply[2],
-		Height:               height,
+		Header: reply[0],
+		Seed:   reply[1],
+		Target: reply[2],
+		Height: height,
+		// block diff
 		Difficulty:           big.NewInt(diff),
 		GetPendingBlockCache: pendingReply,
 		headers:              make(map[string]heightDiffPair),

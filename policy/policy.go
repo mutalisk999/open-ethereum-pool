@@ -9,8 +9,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/sammy007/open-ethereum-pool/storage"
-	"github.com/sammy007/open-ethereum-pool/util"
+	"pool_mod/storage"
+	"pool_mod/util"
 )
 
 type Config struct {
@@ -76,10 +76,12 @@ func Start(cfg *Config, storage *storage.RedisClient) *PolicyServer {
 	timeout := util.MustParseDuration(s.config.ResetInterval)
 	s.timeout = int64(timeout / time.Millisecond)
 
+	// reset timer
 	resetIntv := util.MustParseDuration(s.config.ResetInterval)
 	resetTimer := time.NewTimer(resetIntv)
 	log.Printf("Set policy stats reset every %v", resetIntv)
 
+	// refresh timer
 	refreshIntv := util.MustParseDuration(s.config.RefreshInterval)
 	refreshTimer := time.NewTimer(refreshIntv)
 	log.Printf("Set policy state refresh every %v", refreshIntv)
@@ -91,6 +93,7 @@ func Start(cfg *Config, storage *storage.RedisClient) *PolicyServer {
 				s.resetStats()
 				resetTimer.Reset(resetIntv)
 			case <-refreshTimer.C:
+				// refresh blacklist and whitelist
 				s.refreshState()
 				refreshTimer.Reset(refreshIntv)
 			}
@@ -109,6 +112,7 @@ func (s *PolicyServer) startPolicyWorker() {
 		for {
 			select {
 			case ip := <-s.banChannel:
+				// call system command to ban ip
 				s.doBan(ip)
 			}
 		}
@@ -126,6 +130,7 @@ func (s *PolicyServer) resetStats() {
 		lastBeat := atomic.LoadInt64(&m.LastBeat)
 		bannedAt := atomic.LoadInt64(&m.BannedAt)
 
+		// unban
 		if now-bannedAt >= banningTimeout {
 			atomic.StoreInt64(&m.BannedAt, 0)
 			if atomic.CompareAndSwapInt32(&m.Banned, 1, 0) {

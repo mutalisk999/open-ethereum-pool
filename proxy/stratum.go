@@ -9,7 +9,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/sammy007/open-ethereum-pool/util"
+	"pool_mod/util"
 )
 
 const (
@@ -43,6 +43,7 @@ func (s *ProxyServer) ListenTCP() {
 
 		ip, _, _ := net.SplitHostPort(conn.RemoteAddr().String())
 
+		// need ban
 		if s.policy.IsBanned(ip) || !s.policy.ApplyLimitPolicy(ip) {
 			conn.Close()
 			continue

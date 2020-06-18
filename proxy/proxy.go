@@ -13,10 +13,10 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/sammy007/open-ethereum-pool/policy"
-	"github.com/sammy007/open-ethereum-pool/rpc"
-	"github.com/sammy007/open-ethereum-pool/storage"
-	"github.com/sammy007/open-ethereum-pool/util"
+	"pool_mod/policy"
+	"pool_mod/rpc"
+	"pool_mod/storage"
+	"pool_mod/util"
 )
 
 type ProxyServer struct {
@@ -55,6 +55,7 @@ func NewProxy(cfg *Config, backend *storage.RedisClient) *ProxyServer {
 	proxy := &ProxyServer{config: cfg, backend: backend, policy: policy}
 	proxy.diff = util.GetTargetHex(cfg.Proxy.Difficulty)
 
+	// wallet client
 	proxy.upstreams = make([]*rpc.RPCClient, len(cfg.Upstream))
 	for i, v := range cfg.Upstream {
 		proxy.upstreams[i] = rpc.NewRPCClient(v.Name, v.Url, v.Timeout)
@@ -67,6 +68,7 @@ func NewProxy(cfg *Config, backend *storage.RedisClient) *ProxyServer {
 		go proxy.ListenTCP()
 	}
 
+	// fetch block template and broadcast job
 	proxy.fetchBlockTemplate()
 
 	proxy.hashrateExpiration = util.MustParseDuration(cfg.Proxy.HashrateExpiration)
@@ -81,6 +83,7 @@ func NewProxy(cfg *Config, backend *storage.RedisClient) *ProxyServer {
 	stateUpdateIntv := util.MustParseDuration(cfg.Proxy.StateUpdateInterval)
 	stateUpdateTimer := time.NewTimer(stateUpdateIntv)
 
+	// refresh timer trigger to refresh block template
 	go func() {
 		for {
 			select {
@@ -91,6 +94,7 @@ func NewProxy(cfg *Config, backend *storage.RedisClient) *ProxyServer {
 		}
 	}()
 
+	// check if wallet service or backup wallet service is alive
 	go func() {
 		for {
 			select {
@@ -101,6 +105,7 @@ func NewProxy(cfg *Config, backend *storage.RedisClient) *ProxyServer {
 		}
 	}()
 
+	// write node state to redis
 	go func() {
 		for {
 			select {

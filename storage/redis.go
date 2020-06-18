@@ -9,7 +9,7 @@ import (
 
 	"gopkg.in/redis.v3"
 
-	"github.com/sammy007/open-ethereum-pool/util"
+	"pool_mod/util"
 )
 
 type Config struct {
@@ -611,6 +611,9 @@ func convertStringMap(m map[string]string) map[string]interface{} {
 
 // WARNING: Must run it periodically to flush out of window hashrate entries
 func (r *RedisClient) FlushStaleStats(window, largeWindow time.Duration) (int64, error) {
+	// window is the summary total hashrate info
+	// largeWindow is the detail hashrate info for each miner
+
 	now := util.MakeTimestamp() / 1000
 	max := fmt.Sprint("(", now-int64(window/time.Second))
 	total, err := r.client.ZRemRangeByScore(r.formatKey("hashrate"), "-inf", max).Result()
@@ -658,6 +661,7 @@ func (r *RedisClient) CollectStats(smallWindow time.Duration, maxBlocks, maxPaym
 
 	cmds, err := tx.Exec(func() error {
 		tx.ZRemRangeByScore(r.formatKey("hashrate"), "-inf", fmt.Sprint("(", now-window))
+		// 0 means the first, -1 means the last
 		tx.ZRangeWithScores(r.formatKey("hashrate"), 0, -1)
 		tx.HGetAllMap(r.formatKey("stats"))
 		tx.ZRevRangeWithScores(r.formatKey("blocks", "candidates"), 0, -1)

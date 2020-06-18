@@ -12,8 +12,8 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/sammy007/open-ethereum-pool/storage"
-	"github.com/sammy007/open-ethereum-pool/util"
+	"pool_mod/storage"
+	"pool_mod/util"
 )
 
 type ApiConfig struct {
@@ -64,10 +64,12 @@ func (s *ApiServer) Start() {
 		log.Printf("Starting API on %v", s.config.Listen)
 	}
 
+	// stats timer
 	s.statsIntv = util.MustParseDuration(s.config.StatsCollectInterval)
 	statsTimer := time.NewTimer(s.statsIntv)
 	log.Printf("Set stats collect interval to %v", s.statsIntv)
 
+	// purge timer
 	purgeIntv := util.MustParseDuration(s.config.PurgeInterval)
 	purgeTimer := time.NewTimer(purgeIntv)
 	log.Printf("Set purge interval to %v", purgeIntv)
@@ -75,12 +77,16 @@ func (s *ApiServer) Start() {
 	sort.Ints(s.config.LuckWindow)
 
 	if s.config.PurgeOnly {
+		// purge only
 		s.purgeStale()
 	} else {
 		s.purgeStale()
+		// purge and stat
 		s.collectStats()
 	}
 
+	// timer goroutine
+	// purge or stat while timer is triggered
 	go func() {
 		for {
 			select {

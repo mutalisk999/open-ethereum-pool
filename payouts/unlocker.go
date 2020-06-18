@@ -10,9 +10,9 @@ import (
 
 	"github.com/ethereum/go-ethereum/common/math"
 
-	"github.com/sammy007/open-ethereum-pool/rpc"
-	"github.com/sammy007/open-ethereum-pool/storage"
-	"github.com/sammy007/open-ethereum-pool/util"
+	"pool_mod/rpc"
+	"pool_mod/storage"
+	"pool_mod/util"
 )
 
 type UnlockerConfig struct {
@@ -253,6 +253,7 @@ func (u *BlockUnlocker) unlockPendingBlocks() {
 		return
 	}
 
+	// get current block height
 	current, err := u.rpc.GetPendingBlock()
 	if err != nil {
 		u.halt = true
