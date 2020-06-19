@@ -63,6 +63,7 @@ func NewProxy(cfg *Config, backend *storage.RedisClient) *ProxyServer {
 	}
 	log.Printf("Default upstream: %s => %s", proxy.rpc().Name, proxy.rpc().Url)
 
+	// stratum interactions between miner and pool
 	if cfg.Proxy.Stratum.Enabled {
 		proxy.sessions = make(map[*Session]struct{})
 		go proxy.ListenTCP()

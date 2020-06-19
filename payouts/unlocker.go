@@ -99,6 +99,10 @@ type UnlockResult struct {
  * to make sure we will find it. We can't rely on round height here, it's just a reference point.
  * ISSUE: https://github.com/ethereum/go-ethereum/issues/2333
  */
+
+// candidate block may become one of three different state at last.
+// orphan block, uncle block, matured block (ordinary).
+
 func (u *BlockUnlocker) unlockCandidates(candidates []*storage.BlockData) (*UnlockResult, error) {
 	result := &UnlockResult{}
 
@@ -116,6 +120,7 @@ func (u *BlockUnlocker) unlockCandidates(candidates []*storage.BlockData) (*Unlo
 				continue
 			}
 
+			// traceback history candidate block to check if it is an orphan block
 			block, err := u.rpc.GetBlockByHeight(height)
 			if err != nil {
 				log.Printf("Error while retrieving block %v from node: %v", height, err)
@@ -129,12 +134,14 @@ func (u *BlockUnlocker) unlockCandidates(candidates []*storage.BlockData) (*Unlo
 				orphan = false
 				result.blocks++
 
+				// if not orphan block, handle block and get reward info
 				err = u.handleBlock(block, candidate)
 				if err != nil {
 					u.halt = true
 					u.lastFail = err
 					return nil, err
 				}
+				// update to matured
 				result.maturedBlocks = append(result.maturedBlocks, candidate)
 				log.Printf("Mature block %v with %v tx, hash: %v", candidate.Height, len(block.Transactions), candidate.Hash[0:10])
 				break
@@ -155,10 +162,12 @@ func (u *BlockUnlocker) unlockCandidates(candidates []*storage.BlockData) (*Unlo
 				}
 
 				// Found uncle
+				// if candidate block is uncle block
 				if matchCandidate(uncle, candidate) {
 					orphan = false
 					result.uncles++
 
+					// if uncle block, handle uncle block and get uncle reward info
 					err := handleUncle(height, uncle, candidate)
 					if err != nil {
 						u.halt = true
@@ -248,6 +257,7 @@ func handleUncle(height int64, uncle *rpc.GetBlockReply, candidate *storage.Bloc
 }
 
 func (u *BlockUnlocker) unlockPendingBlocks() {
+	// halt when critical error happen
 	if u.halt {
 		log.Println("Unlocking suspended due to last critical error:", u.lastFail)
 		return
