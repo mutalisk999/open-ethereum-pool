@@ -13,10 +13,10 @@ import (
 
 	"github.com/yvasiyarov/gorelic"
 
-	"pool_mod/api"
-	"pool_mod/payouts"
-	"pool_mod/proxy"
-	"pool_mod/storage"
+	"eth-pool/api"
+	"eth-pool/payouts"
+	"eth-pool/proxy"
+	"eth-pool/storage"
 )
 
 var cfg proxy.Config

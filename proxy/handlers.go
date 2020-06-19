@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"strings"
 
-	"pool_mod/rpc"
-	"pool_mod/util"
+	"eth-pool/rpc"
+	"eth-pool/util"
 )
 
 // Allow only lowercase hexadecimal with 0x prefix

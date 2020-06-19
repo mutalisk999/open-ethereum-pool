@@ -9,7 +9,7 @@ import (
 	"net"
 	"time"
 
-	"pool_mod/util"
+	"eth-pool/util"
 )
 
 const (

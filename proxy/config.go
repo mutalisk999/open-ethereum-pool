@@ -1,10 +1,10 @@
 package proxy
 
 import (
-	"pool_mod/api"
-	"pool_mod/payouts"
-	"pool_mod/policy"
-	"pool_mod/storage"
+	"eth-pool/api"
+	"eth-pool/payouts"
+	"eth-pool/policy"
+	"eth-pool/storage"
 )
 
 type Config struct {

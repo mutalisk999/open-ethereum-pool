@@ -9,7 +9,7 @@ import (
 
 	"gopkg.in/redis.v3"
 
-	"pool_mod/util"
+	"eth-pool/util"
 )
 
 type Config struct {

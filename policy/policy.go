@@ -9,8 +9,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"pool_mod/storage"
-	"pool_mod/util"
+	"eth-pool/storage"
+	"eth-pool/util"
 )
 
 type Config struct {

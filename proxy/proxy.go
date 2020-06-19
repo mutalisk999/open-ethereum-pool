@@ -13,10 +13,10 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"pool_mod/policy"
-	"pool_mod/rpc"
-	"pool_mod/storage"
-	"pool_mod/util"
+	"eth-pool/policy"
+	"eth-pool/rpc"
+	"eth-pool/storage"
+	"eth-pool/util"
 )
 
 type ProxyServer struct {

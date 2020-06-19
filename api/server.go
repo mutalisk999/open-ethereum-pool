@@ -12,8 +12,8 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"pool_mod/storage"
-	"pool_mod/util"
+	"eth-pool/storage"
+	"eth-pool/util"
 )
 
 type ApiConfig struct {
