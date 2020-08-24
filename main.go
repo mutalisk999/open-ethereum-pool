@@ -80,6 +80,7 @@ func main() {
 		log.Printf("Running with %v threads", cfg.Threads)
 	}
 
+	// performance profile
 	startNewrelic()
 
 	backend = storage.NewRedisClient(&cfg.Redis, cfg.Coin)
