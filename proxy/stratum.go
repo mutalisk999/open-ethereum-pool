@@ -9,7 +9,7 @@ import (
 	"net"
 	"time"
 
-	"eth-pool/util"
+	"github.com/mutalisk999/open-ethereum-pool/util"
 )
 
 const (

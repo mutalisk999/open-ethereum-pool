@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"pool_mod/rpc"
-	"pool_mod/storage"
+	"github.com/mutalisk999/open-ethereum-pool/rpc"
+	"github.com/mutalisk999/open-ethereum-pool/storage"
 )
 
 func TestMain(m *testing.M) {

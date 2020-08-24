@@ -1,10 +1,10 @@
 package proxy
 
 import (
-	"eth-pool/api"
-	"eth-pool/payouts"
-	"eth-pool/policy"
-	"eth-pool/storage"
+	"github.com/mutalisk999/open-ethereum-pool/api"
+	"github.com/mutalisk999/open-ethereum-pool/payouts"
+	"github.com/mutalisk999/open-ethereum-pool/policy"
+	"github.com/mutalisk999/open-ethereum-pool/storage"
 )
 
 type Config struct {

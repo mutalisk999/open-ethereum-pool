@@ -13,10 +13,10 @@ import (
 
 	"github.com/yvasiyarov/gorelic"
 
-	"eth-pool/api"
-	"eth-pool/payouts"
-	"eth-pool/proxy"
-	"eth-pool/storage"
+	"github.com/mutalisk999/open-ethereum-pool/api"
+	"github.com/mutalisk999/open-ethereum-pool/payouts"
+	"github.com/mutalisk999/open-ethereum-pool/proxy"
+	"github.com/mutalisk999/open-ethereum-pool/storage"
 )
 
 var cfg proxy.Config

@@ -1,4 +1,4 @@
-module eth-pool
+module github.com/mutalisk999/open-ethereum-pool
 
 go 1.14
 
